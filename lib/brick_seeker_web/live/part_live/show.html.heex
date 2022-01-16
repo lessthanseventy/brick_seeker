@@ -1,0 +1,31 @@
+<h1>Show Part</h1>
+
+<%= if @live_action in [:edit] do %>
+  <.modal return_to={Routes.part_show_path(@socket, :show, @part)}>
+    <.live_component
+      module={BrickSeekerWeb.PartLive.FormComponent}
+      id={@part.id}
+      title={@page_title}
+      action={@live_action}
+      part={@part}
+      return_to={Routes.part_show_path(@socket, :show, @part)}
+    />
+  </.modal>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Part number:</strong>
+    <%= @part.part_number %>
+  </li>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @part.name %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.part_show_path(@socket, :edit, @part), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.part_index_path(@socket, :index) %></span>
