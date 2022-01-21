@@ -10,6 +10,8 @@ import Config
 config :brick_seeker,
   ecto_repos: [BrickSeeker.Repo]
 
+config :brick_seeker, BrickSeeker.Repo, migration_timestamps: [type: :utc_datetime_usec]
+
 # Configures the endpoint
 config :brick_seeker, BrickSeekerWeb.Endpoint,
   url: [host: "localhost"],
