@@ -1,5 +1,8 @@
 defmodule BrickSeeker.Parts.PartImporter do
+  import Ecto.Query
+
   alias BrickSeeker.Repo
+  alias BrickSeeker.Parts.Part
 
   @line_number_offset 2
 
@@ -14,10 +17,31 @@ defmodule BrickSeeker.Parts.PartImporter do
             Repo.rollback(invalid_rows)
 
           %{valid_rows: valid_rows} ->
-            elem(Repo.insert_all(BrickSeeker.Parts.Part, valid_rows), 0) + acc
+            {inserted_count, _} = insert_all_parts(valid_rows)
+            acc + inserted_count
         end
       end)
     end)
+  end
+
+  defp insert_all_parts(valid_rows) do
+    on_conflict_query =
+      from(
+        part in Part,
+        update: [
+          set: [
+            name: fragment("EXCLUDED.name"),
+            updated_at: fragment("EXCLUDED.updated_at")
+          ]
+        ]
+      )
+
+    Repo.insert_all(
+      Part,
+      valid_rows,
+      conflict_target: :part_number,
+      on_conflict: on_conflict_query
+    )
   end
 
   defp batch_rows(file_path) do
