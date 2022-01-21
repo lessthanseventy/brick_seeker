@@ -11,11 +11,21 @@ defmodule BrickSeeker.Parts.PartImporterTest do
       assert {:ok, 10} = PartImporter.import_from_file(parts_file)
     end
 
-    test "with an invalid file it shows an error message for the first invalid lines" do
+    test "with an invalid file it shows an error message for the each of the invalid lines" do
       parts_file = Path.join(File.cwd!(), "test/fixtures/invalid_parts.csv")
 
-      assert {:error, [{11, "Row has length 4 - expected length 3 on line 11"}]} =
-               PartImporter.import_from_file(parts_file)
+      assert {:error,
+              [
+                "Row has length 4 - expected length 3 on line 3",
+                "Row has length 2 - expected length 3 on line 11"
+              ]} = PartImporter.import_from_file(parts_file, batch_size: 2)
+    end
+
+    test "with an invalid file it does not change the database" do
+      parts_file = Path.join(File.cwd!(), "test/fixtures/invalid_parts.csv")
+
+      assert {:error, _} = PartImporter.import_from_file(parts_file)
+      assert 0 == Repo.aggregate(Part, :count)
     end
 
     test "imports are idempotent and perform upserts" do
