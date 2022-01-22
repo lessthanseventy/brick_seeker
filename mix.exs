@@ -25,7 +25,7 @@ defmodule BrickSeeker.MixProject do
   end
 
   # Specifies which paths to compile per environment.
-  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(:test), do: ["lib", "test/support", "test/factories"]
   defp elixirc_paths(_), do: ["lib"]
 
   # Specifies your project dependencies.
@@ -36,6 +36,8 @@ defmodule BrickSeeker.MixProject do
       {:csv, "~> 2.4", only: [:dev, :test]},
       {:ecto_sql, "~> 3.6"},
       {:esbuild, "~> 0.3", runtime: Mix.env() == :dev},
+      {:ex_machina, "~> 2.7", only: :test},
+      {:faker, "~> 0.17", only: [:dev, :test]},
       {:floki, ">= 0.30.0", only: :test},
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
@@ -49,7 +51,8 @@ defmodule BrickSeeker.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:swoosh, "~> 1.3"},
       {:telemetry_metrics, "~> 0.6"},
-      {:telemetry_poller, "~> 1.0"}
+      {:telemetry_poller, "~> 1.0"},
+      {:wallaby, "~> 0.29", runtime: false, only: :test}
     ]
   end
 
@@ -64,7 +67,7 @@ defmodule BrickSeeker.MixProject do
       setup: ["deps.get", "ecto.setup"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      test: ["assets.deploy --quiet", "ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.deploy": ["esbuild default --minify", "phx.digest"]
     ]
   end

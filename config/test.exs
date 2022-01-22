@@ -18,7 +18,9 @@ config :brick_seeker, BrickSeeker.Repo,
 config :brick_seeker, BrickSeekerWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
   secret_key_base: "kUTegsEIIK5ODsRqT1JXeScuF86Kd2V/ZGbqqFA4rLI8/2hYfi3LCAxYBesbO0GF",
-  server: false
+  server: true
+
+config :brick_seeker, :sandbox, Ecto.Adapters.SQL.Sandbox
 
 # In test we don't send emails.
 config :brick_seeker, BrickSeeker.Mailer, adapter: Swoosh.Adapters.Test
@@ -28,3 +30,12 @@ config :logger, level: :warn
 
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
+
+config :wallaby,
+  driver: Wallaby.Chrome,
+  otp_app: :brick_seeker
+
+# config :wallaby,
+#   chromedriver: [
+#     headless: false
+#   ]
