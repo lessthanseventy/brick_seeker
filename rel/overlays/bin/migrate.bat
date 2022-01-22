@@ -1,0 +1,1 @@
+call "%~dp0\brick_seeker" eval BrickSeeker.Release.migrate
