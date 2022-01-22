@@ -33,7 +33,7 @@ defmodule BrickSeeker.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:csv, "~> 2.4", only: [:dev, :test]},
+      {:csv, "~> 2.4"},
       {:ecto_sql, "~> 3.6"},
       {:esbuild, "~> 0.3", runtime: Mix.env() == :dev},
       {:ex_machina, "~> 2.7", only: :test},
