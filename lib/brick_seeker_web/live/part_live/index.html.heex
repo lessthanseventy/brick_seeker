@@ -1,1 +1,14 @@
 <h1>Listing Parts</h1>
+
+<.live_component
+  module={BrickSeekerWeb.AutocompleteComponent}
+  id="part_search"
+  selector="parts"
+  search_module={BrickSeeker.Parts}
+  search_fn={:search_parts}
+  on_match_selected={:match_selected}/>
+
+<%= if @part do %>
+  <h2>Selected Part</h2>
+  <p data-test-id={@part.id}><%= BrickSeekerWeb.Option.display_name(@part) %></p>
+<% end %>
