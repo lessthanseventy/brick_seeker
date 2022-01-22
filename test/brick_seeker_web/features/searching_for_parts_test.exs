@@ -1,9 +1,5 @@
 defmodule BrickSeeker.SearchingForPartsTest do
-  use ExUnit.Case, async: false
-  use Wallaby.Feature
-  import BrickSeeker.Factory
-
-  alias BrickSeekerWeb.Pages.{PartsIndexPage, AutocompleteComponent}
+  use BrickSeeker.FeatureCase, async: true
   alias Faker.Color
 
   feature "searching for parts by name", %{session: session} do
@@ -19,5 +15,17 @@ defmodule BrickSeeker.SearchingForPartsTest do
       |> AutocompleteComponent.select_from_search(part_to_select)
     end)
     |> PartsIndexPage.assert_part_selected(part_to_select)
+  end
+
+  feature "list parts", %{session: session} do
+    session
+    |> visit("/parts")
+    |> assert_has(Query.text("Listing Parts"))
+  end
+
+  feature "list parts again", %{session: session} do
+    session
+    |> visit("/parts")
+    |> assert_has(Query.text("Part Search"))
   end
 end

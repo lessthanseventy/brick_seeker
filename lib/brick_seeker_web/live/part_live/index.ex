@@ -3,6 +3,7 @@ defmodule BrickSeekerWeb.PartLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
+    allow_ecto_sandbox(socket)
     {:ok, assign(socket, :part, nil)}
   end
 
