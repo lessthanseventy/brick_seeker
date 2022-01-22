@@ -18,11 +18,6 @@ defmodule BrickSeekerWeb.Router do
     pipe_through :browser
 
     live "/parts", PartLive.Index, :index
-    live "/parts/new", PartLive.Index, :new
-    live "/parts/:id/edit", PartLive.Index, :edit
-
-    live "/parts/:id", PartLive.Show, :show
-    live "/parts/:id/show/edit", PartLive.Show, :edit
 
     get "/", PageController, :index
   end
