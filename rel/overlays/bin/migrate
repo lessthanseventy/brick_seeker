@@ -1,0 +1,3 @@
+#!/bin/sh
+cd -P -- "$(dirname -- "$0")"
+exec ./brick_seeker eval BrickSeeker.Release.migrate
