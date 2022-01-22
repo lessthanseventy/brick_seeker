@@ -57,4 +57,13 @@ defmodule BrickSeekerWeb.LiveHelpers do
     |> JS.hide(to: "#modal", transition: "fade-out")
     |> JS.hide(to: "#modal-content", transition: "fade-out-scale")
   end
+
+  def allow_ecto_sandbox(socket) do
+    %{assigns: %{phoenix_ecto_sandbox: metadata}} =
+      assign_new(socket, :phoenix_ecto_sandbox, fn ->
+        if connected?(socket), do: get_connect_info(socket)[:user_agent]
+      end)
+
+    Phoenix.Ecto.SQL.Sandbox.allow(metadata, Ecto.Adapters.SQL.Sandbox)
+  end
 end
