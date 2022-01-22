@@ -2,14 +2,14 @@ defmodule BrickSeekerWeb.PartLiveTest do
   use BrickSeekerWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import BrickSeeker.PartsFixtures
+  import BrickSeeker.Factory
 
   @create_attrs %{name: "some new name", part_number: "some new part_number"}
   @update_attrs %{name: "some updated name", part_number: "some updated part_number"}
   @invalid_attrs %{name: nil, part_number: nil}
 
   defp create_part(_) do
-    part = part_fixture()
+    part = insert(:part)
     %{part: part}
   end
 
@@ -42,7 +42,7 @@ defmodule BrickSeekerWeb.PartLiveTest do
         |> follow_redirect(conn, Routes.part_index_path(conn, :index))
 
       assert html =~ "Part created successfully"
-      assert html =~ "some name"
+      assert html =~ "some new name"
     end
 
     test "updates part in listing", %{conn: conn, part: part} do

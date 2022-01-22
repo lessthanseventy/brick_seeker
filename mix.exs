@@ -25,7 +25,7 @@ defmodule BrickSeeker.MixProject do
   end
 
   # Specifies which paths to compile per environment.
-  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(:test), do: ["lib", "test/support", "test/factories"]
   defp elixirc_paths(_), do: ["lib"]
 
   # Specifies your project dependencies.
@@ -36,6 +36,8 @@ defmodule BrickSeeker.MixProject do
       {:csv, "~> 2.4", only: [:dev, :test]},
       {:ecto_sql, "~> 3.6"},
       {:esbuild, "~> 0.3", runtime: Mix.env() == :dev},
+      {:ex_machina, "~> 2.7", only: :test},
+      {:faker, "~> 0.17", only: [:dev, :test]},
       {:floki, ">= 0.30.0", only: :test},
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
