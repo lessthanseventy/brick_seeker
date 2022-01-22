@@ -101,4 +101,16 @@ defmodule BrickSeeker.Parts do
   def change_part(%Part{} = part, attrs \\ %{}) do
     Part.changeset(part, attrs)
   end
+
+  def search_parts(search_query, opts \\ []) do
+    limit = Keyword.get(opts, :limit, 50)
+
+    from(
+      p in Part,
+      where: ilike(fragment("CONCAT(?, ': ', ?)", p.part_number, p.name), ^"%#{search_query}%"),
+      order_by: p.part_number,
+      limit: ^limit
+    )
+    |> Repo.all()
+  end
 end

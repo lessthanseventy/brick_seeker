@@ -56,5 +56,21 @@ defmodule BrickSeeker.PartsTest do
       part = insert(:part)
       assert %Ecto.Changeset{} = Parts.change_part(part)
     end
+
+    test "search_parts returns matching parts based on part_name, sorted by part_number" do
+      match_1 = insert(:part, part_number: "2", name: "Stud large")
+      match_2 = insert(:part, part_number: "1", name: "Small stud")
+      _no_match_3 = insert(:part, part_number: "23", name: "Not today")
+
+      assert [match_2, match_1] == Parts.search_parts("stu")
+    end
+
+    test "search_parts returns matching parts based on part_number, sorted by part_number" do
+      match_1 = insert(:part, part_number: "12378xt")
+      match_2 = insert(:part, part_number: "12345xt")
+      _no_match_3 = insert(:part, part_number: "321xt")
+
+      assert [match_2, match_1] == Parts.search_parts("123")
+    end
   end
 end
