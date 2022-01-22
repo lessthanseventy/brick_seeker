@@ -1,0 +1,9 @@
+<div id={"#{@selector}_search"}>
+  <%= label :search, :query, "Part Search" %>
+  <%= text_input :"#{@selector}_search", :query, list: "match_list", phx_keyup: "search_changed", phx_target: @myself %>
+  <datalist id="match_list">
+    <%= for match <- @matches do %>
+      <option value={BrickSeekerWeb.Option.value(match)}><%= BrickSeekerWeb.Option.display_name(match) %></option>
+    <% end %>
+  </datalist>
+</div>
