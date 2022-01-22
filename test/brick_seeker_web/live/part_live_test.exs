@@ -4,7 +4,7 @@ defmodule BrickSeekerWeb.PartLiveTest do
   import Phoenix.LiveViewTest
   import BrickSeeker.PartsFixtures
 
-  @create_attrs %{name: "some name", part_number: "some part_number"}
+  @create_attrs %{name: "some new name", part_number: "some new part_number"}
   @update_attrs %{name: "some updated name", part_number: "some updated part_number"}
   @invalid_attrs %{name: nil, part_number: nil}
 

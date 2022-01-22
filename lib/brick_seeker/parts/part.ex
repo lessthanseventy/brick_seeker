@@ -14,5 +14,6 @@ defmodule BrickSeeker.Parts.Part do
     part
     |> cast(attrs, [:part_number, :name])
     |> validate_required([:part_number, :name])
+    |> unique_constraint(:part_number)
   end
 end
