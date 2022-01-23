@@ -33,7 +33,8 @@ config :phoenix, :plug_init_mode, :runtime
 
 config :wallaby,
   driver: Wallaby.Chrome,
-  otp_app: :brick_seeker
+  otp_app: :brick_seeker,
+  screenshot_on_failure: true
 
 # config :wallaby,
 #   chromedriver: [
