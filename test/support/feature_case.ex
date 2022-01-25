@@ -3,13 +3,10 @@ defmodule BrickSeeker.FeatureCase do
 
   using do
     quote do
-      use Wallaby.DSL
-
       import BrickSeeker.Factory
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
-      import Wallaby.Query
       import Wallaby.Feature
 
       alias BrickSeeker.Repo
