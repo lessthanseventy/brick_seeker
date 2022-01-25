@@ -16,8 +16,8 @@ defmodule BrickSeeker.Parts.PartImporterTest do
 
       assert {:error,
               [
-                "Row has length 4 - expected length 3 on line 3",
-                "Row has length 2 - expected length 3 on line 11"
+                "CSV Validation Error: Row has length 4 - expected length 3 on line 3",
+                "CSV Validation Error: Row has length 2 - expected length 3 on line 11"
               ]} = PartImporter.import_from_file(parts_file, batch_size: 2)
     end
 
@@ -25,6 +25,32 @@ defmodule BrickSeeker.Parts.PartImporterTest do
       parts_file = Path.join(File.cwd!(), "test/fixtures/invalid_parts.csv")
 
       assert {:error, _} = PartImporter.import_from_file(parts_file)
+      assert 0 == Repo.aggregate(Part, :count)
+    end
+
+    test "with a syntactically valid file but missing part data it does not change the database" do
+      parts_file = Path.join(File.cwd!(), "test/fixtures/parts_missing_data.csv")
+
+      assert {:error,
+              [
+                "Model Validation Error: name can't be blank on line 3",
+                "Model Validation Error: part_number can't be blank on line 10",
+                "Model Validation Error: name can't be blank, part_number can't be blank on line 11"
+              ]} = PartImporter.import_from_file(parts_file, batch_size: 2)
+
+      assert 0 == Repo.aggregate(Part, :count)
+    end
+
+    test "with syntax errors and missing part data it shows both kinds of errors" do
+      parts_file =
+        Path.join(File.cwd!(), "test/fixtures/invalid_syntax_and_parts_missing_info.csv")
+
+      assert {:error,
+              [
+                "CSV Validation Error: Row has length 4 - expected length 3 on line 3",
+                "Model Validation Error: name can't be blank on line 10"
+              ]} = PartImporter.import_from_file(parts_file, batch_size: 2)
+
       assert 0 == Repo.aggregate(Part, :count)
     end
 

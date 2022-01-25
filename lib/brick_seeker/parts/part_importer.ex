@@ -1,6 +1,7 @@
 defmodule BrickSeeker.Parts.PartImporter do
   import Ecto.Query
 
+  alias BrickSeeker.Parts
   alias BrickSeeker.Repo
   alias BrickSeeker.Parts.Part
 
@@ -13,6 +14,7 @@ defmodule BrickSeeker.Parts.PartImporter do
       file_path
       |> stream_rows()
       |> transform_rows()
+      |> validate_rows()
       |> batch_rows(batch_size)
       |> upsert_batches()
       |> case do
@@ -32,7 +34,7 @@ defmodule BrickSeeker.Parts.PartImporter do
     Stream.map(rows, &transform_row/1)
   end
 
-  defp transform_row({:error, _} = error), do: error
+  defp transform_row({:error, message}), do: {:error, "CSV Validation Error: " <> message}
 
   defp transform_row({:ok, %{"part_num" => part_number, "name" => name}}) do
     {:ok,
@@ -42,6 +44,41 @@ defmodule BrickSeeker.Parts.PartImporter do
        inserted_at: DateTime.utc_now(),
        updated_at: DateTime.utc_now()
      }}
+  end
+
+  defp validate_rows(rows) do
+    rows
+    |> Stream.with_index()
+    |> Stream.map(&validate_row/1)
+  end
+
+  defp validate_row({{:ok, part_map}, index}) do
+    case Parts.change_part(%Part{}, part_map) do
+      %{errors: [_ | _]} = changeset -> {:error, format_errors_for_row(changeset, index + 2)}
+      _ -> {:ok, part_map}
+    end
+  end
+
+  defp validate_row({error_row, _index}), do: error_row
+
+  defp format_errors_for_row(changeset, row_number) do
+    messages =
+      changeset
+      |> Ecto.Changeset.traverse_errors(fn {msg, opts} ->
+        Enum.reduce(opts, msg, fn {key, value}, acc ->
+          String.replace(acc, "%{#{key}}", to_string(value))
+        end)
+      end)
+      |> Enum.reduce([], fn {field_name, errors}, acc ->
+        messages_for_field =
+          errors
+          |> Enum.map(fn error -> "#{field_name} #{error}" end)
+
+        acc ++ messages_for_field
+      end)
+      |> Enum.join(", ")
+
+    "Model Validation Error: " <> messages <> " on line #{row_number}"
   end
 
   defp batch_rows(part_rows, batch_size) do
